@@ -111,6 +111,38 @@ function inflate_status_menu(controller) {
     });
 }
 
+function extract_tag_label(tag_element) {
+    if (tag_element.classList.contains("tag-form")) {
+        const tag_label_element = tag_element.querySelector(".tag-form-input[name='label']");
+        if (tag_label_element) {
+            return tag_label_element.value.trim().toLowerCase();
+        }
+    } else {
+        const tag_label_element = tag_element.querySelector(".tag-label");
+        if (tag_label_element) {
+            return tag_label_element.textContent.trim().toLowerCase();
+        }
+    }
+    return "~";
+}
+
+function insert_in_tag_list(tag_list, tag_element) {
+    const tag_label = extract_tag_label(tag_element);
+    let child_index = -1;
+    for (let i = 0; i < tag_list.children.length; i++) {
+        const child_label = extract_tag_label(tag_list.children[i]);
+        if (tag_label < child_label) {
+            child_index = i;
+            break;
+        }
+    }
+    if (child_index == -1) {
+        tag_list.appendChild(tag_element);
+    } else {
+        tag_list.insertBefore(tag_element, tag_list.children[child_index]);
+    }
+}
+
 /* Data classes **************************************************************/
 
 class Folder {
@@ -194,14 +226,7 @@ class Folder {
             self.controller.save_folder_data();
         });
         const folder_tags = this.element.querySelector(".folder-tags");
-        let insert_before_child = null;
-        for (let i = 0; i < folder_tags.children.length; i++) {
-            if (folder_tags.children[i].textContent.toLowerCase() > tag.label.toLowerCase() || folder_tags.children[i].textContent == "+") {
-                insert_before_child = folder_tags.children[i];
-                break;
-            }
-        }
-        folder_tags.insertBefore(tag_element, insert_before_child);
+        insert_in_tag_list(folder_tags, tag_element);
     }
 
     get_tag_element(tag_index) {
@@ -371,7 +396,7 @@ class Controller {
                 document.getElementById("searchbar").value = "#" + tag.label;
                 self.filter_folders("#" + tag.label);
             });
-            filter_container.appendChild(tag_element);
+            insert_in_tag_list(filter_container, tag_element);
 
             const tag_form = document.createElement("div");
             tag_form.classList.add("tag-form");
@@ -404,7 +429,7 @@ class Controller {
                 }
             });
             tag_form.appendChild(tag_form_button);
-            form_container.appendChild(tag_form);
+            insert_in_tag_list(form_container, tag_form);
             set_tag_form_color_callback(tag_form);
 
             const choose_tag_element = create_tag_element(tag);
@@ -415,7 +440,7 @@ class Controller {
                 self.save_folder_data();
                 modal.classList.remove("active");
             });
-            modal_choose_tag_container.appendChild(choose_tag_element);
+            insert_in_tag_list(modal_choose_tag_container, choose_tag_element);
         };
     }
 
