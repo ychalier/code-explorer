@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf8">
+    <title>Code Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <script>
+        const SAVED_TAGS = JSON.parse('JSON_STRING_TAGS');
+        const SAVED_FOLDERS = JSON.parse('JSON_STRING_FOLDERS');
+    </script>
+    <script src="master.js"></script>
+</head>
+
+<body>
+    <div class="columns">
+        <div class="column column-sticky">
+            <div id="scrollbar"></div>
+        </div>
+        <div class="column">
+            <div id="folders"></div>
+        </div>
+        <div class="column column-sticky">
+            <div class="container">
+                <div id="searchbar-container">
+                    <input id="searchbar" placeholder="Search..." type="text" />
+                    <button id="button-searchbar-clear" title="Clear search">×</button>
+                </div>
+                <div id="button-manage-tags" class="tag" onclick="show_modal('modal-tag-manage')">manage tags</div>
+                <div id="tag-list-config" class="tag-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <template id="template-folder">
+        <div class="folder">
+            <div class="folder-header">
+                <div class="folder-buttons">
+                    <button class="folder-button btn-vscode" title="Open in Editor"><i class="icon"></i></button>
+                    <button class="folder-button btn-terminal" title="Open in Terminal"><i class="icon"></i></button>
+                    <button class="folder-button btn-copy" title="Copy as path"><i class="icon"></i></button>
+                </div>
+                <div class="folder-name"></div>
+            </div>
+            <div class="folder-info">
+                <div class="folder-mtime"></div>
+                <div class="folder-status"></div>
+                <div class="folder-languages"></div>
+            </div>
+            <div class="folder-tags tag-list"></div>
+        </div>
+    </template>
+
+    <div id="modal-tag-choice" class="modal">
+        <div class="modal-background" onclick="close_modal('modal-tag-choice')"></div>
+        <div id="tag-list-choice" class="modal-foreground tag-list"></div>
+    </div>
+
+    <div id="modal-tag-manage" class="modal">
+        <div class="modal-background" onclick="close_modal('modal-tag-manage')"></div>
+        <div class="modal-foreground">
+            <div class="modal-header">Tags</div>
+            <div class="tag-form" id="tag-create">
+                <input id="tag-create-label" type="text" class="tag-form-input" name="label" placeholder="Label" />
+                <input id="tag-create-color" type="text" class="tag-form-input" name="color" size="7" maxlength="7" placeholder="Color" />
+                <button id="tag-create-button" class="tag-form-button">Add</button>
+            </div>
+            <div id="tag-forms"></div>
+        </div>
+    </div>
+
+    <div id="folder-status-menu" class="menu hidden"></div>
+
+</body>
+
+</html>
